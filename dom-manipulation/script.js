@@ -68,39 +68,86 @@ function addQuote() {
     const newQuote = { text: newQuoteText, category: newQuoteCategory };
     quotes.push(newQuote);
     saveQuotes();
-    showRandomQuote();
+    populateCategories();
+    filterQuotes();
     document.getElementById("newQuoteText").value = "";
     document.getElementById("newQuoteCategory").value = "";
 }
 
-// Function to export quotes to JSON
-function exportQuotesToJson() {
-    const jsonQuotes = JSON.stringify(quotes);
-    const blob = new Blob([jsonQuotes], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "quotes.json";
-    a.click();
+// Function to populate categories in the dropdown
+function populateCategories() {
+    const categoryFilter = document.getElementById("categoryFilter");
+    categoryFilter.innerHTML = ""; // Clear existing categories
+
+    const uniqueCategories = [...new Set(quotes.map(quote => quote.category))];
+    uniqueCategories.forEach(category => {
+        const option = document.createElement("option");
+        option.value = category;
+        option.textContent = category;
+        categoryFilter.appendChild(option);
+    });
+
+    const allOption = document.createElement("option");
+    allOption.value = "all";
+    allOption.textContent = "All Categories";
+    categoryFilter.insertBefore(allOption, categoryFilter.firstChild);
 }
 
-// Function to import quotes from JSON file
-function importFromJsonFile(event) {
-    const fileReader = new FileReader();
-    fileReader.onload = function(event) {
-        const importedQuotes = JSON.parse(event.target.result);
-        quotes.push(...importedQuotes);
-        saveQuotes();
-        alert("Quotes imported successfully!");
-    };
-    fileReader.readAsText(event.target.files[0]);
+// Function to filter quotes based on the selected category
+function filterQuotes() {
+    const quoteDisplay = document.getElementById("quoteDisplay");
+    quoteDisplay.innerHTML = ""; // Clear existing quotes
+
+    const selectedCategory = document.getElementById("categoryFilter").value;
+    const filteredQuotes = quotes.filter(quote => quote.category === selectedCategory || selectedCategory === "all");
+
+    if (filteredQuotes.length === 0) {
+        quoteDisplay.textContent = "No quotes available in this category.";
+        return;
+    }
+
+    filteredQuotes.forEach(quote => {
+        const quoteTextPara = document.createElement("p");
+        quoteTextPara.textContent = quote.text;
+        quoteDisplay.appendChild(quoteTextPara);
+
+        const quoteCategoryPara = document.createElement("p");
+        quoteCategoryPara.textContent = `Category: ${quote.category}`;
+        quoteDisplay.appendChild(quoteCategoryPara);
+    });
 }
 
+// Function to simulate server interaction
+function simulateServerInteraction() {
+    // Simulate fetching data from the server
+    fetch('https://jsonplaceholder.typicode.com/posts')
+        .then(response => response.json())
+        .then(data => {
+            // Update local quotes array with server data
+            quotes = data.map(post => ({ text: post.title, category: post.userId }));
+            saveQuotes();
+            populateCategories();
+            filterQuotes();
+        })
+        .catch(error => console.error('Error fetching data:', error));
+}
+
+// Function to sync local data with server
+function syncWithServer() {
+    simulateServerInteraction();
+    document.getElementById("syncStatus").textContent = "Data synced with server.";
+}
+
+// Event listeners
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
 document.getElementById("exportQuotes").addEventListener("click", exportQuotesToJson);
+document.getElementById("syncWithServer").addEventListener("click", syncWithServer);
 
 // Load existing quotes from local storage
 loadQuotes();
 
-// Display a random quote on page load
-showRandomQuote();
+// Populate categories in the dropdown
+populateCategories();
+
+// Simulate initial server interaction
+simulateServerInteraction();
