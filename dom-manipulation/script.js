@@ -178,6 +178,14 @@ async function syncWithServer() {
     document.getElementById("syncStatus").textContent = "Data synced with server.";
 }
 
+// Function to sync local quotes with server at regular intervals
+function syncQuotesRegularly() {
+    setInterval(async () => {
+        await syncQuotes();
+        console.log('Quotes synced with server at regular interval.');
+    }, 60000); // Sync quotes every 60 seconds
+}
+
 // Event listeners
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
 document.getElementById("exportQuotes").addEventListener("click", exportQuotesToJson);
@@ -185,6 +193,9 @@ document.getElementById("syncWithServer").addEventListener("click", syncWithServ
 
 // Load existing quotes from local storage
 loadQuotes();
+
+// start syncing quotes at regular intervals
+syncQuotesRegularly();
 
 // Populate categories in the dropdown
 populateCategories();
