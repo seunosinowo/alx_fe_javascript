@@ -118,7 +118,7 @@ function filterQuotes() {
 }
 
 // Function to simulate server interaction
-function simulateServerInteraction() {
+function fetchQuotesFromServer() {
     // Simulate fetching data from the server
     fetch('https://jsonplaceholder.typicode.com/posts')
         .then(response => response.json())
