@@ -118,18 +118,20 @@ function filterQuotes() {
 }
 
 // Function to simulate server interaction
-function fetchQuotesFromServer() {
-    // Simulate fetching data from the server
-    fetch('https://jsonplaceholder.typicode.com/posts')
-        .then(response => response.json())
-        .then(data => {
-            // Update local quotes array with server data
-            quotes = data.map(post => ({ text: post.title, category: post.userId }));
-            saveQuotes();
-            populateCategories();
-            filterQuotes();
-        })
-        .catch(error => console.error('Error fetching data:', error));
+async function fetchQuotesFromServer() {
+    try {
+        // Simulate fetching data from the server
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+        const data = await response.json();
+        
+        // Update local quotes array with server data
+        quotes = data.map(post => ({ text: post.title, category: post.userId }));
+        saveQuotes();
+        populateCategories();
+        filterQuotes();
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
 }
 
 // Function to sync local data with server
