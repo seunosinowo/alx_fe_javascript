@@ -178,13 +178,15 @@ async function syncWithServer() {
     document.getElementById("syncStatus").textContent = "Data synced with server.";
 }
 
+
 // Function to sync local quotes with server at regular intervals
 function syncQuotesRegularly() {
     setInterval(async () => {
         await syncQuotes();
-        console.log('Quotes synced with server at regular interval.');
-    }, 60000); // Sync quotes every 60 seconds
+        alert("Quotes synced with server!");
+    }, 60000); 
 }
+
 
 // Event listeners
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
