@@ -2,7 +2,7 @@
 let quotes = [];
 
 // Load existing quotes from local storage
-function loadQuotes() {
+async function loadQuotes() {
     const storedQuotes = localStorage.getItem("quotes");
     if (storedQuotes) {
         quotes = JSON.parse(storedQuotes);
@@ -10,12 +10,12 @@ function loadQuotes() {
 }
 
 // Save quotes to local storage
-function saveQuotes() {
+async function saveQuotes() {
     localStorage.setItem("quotes", JSON.stringify(quotes));
 }
 
 // Function to display a random quote
-function showRandomQuote() {
+async function showRandomQuote() {
     const quoteDisplay = document.getElementById("quoteDisplay");
     quoteDisplay.innerHTML = ""; // Clear existing quote
 
@@ -38,7 +38,7 @@ function showRandomQuote() {
 }
 
 // Function to create and display the add quote form
-function createAddQuoteForm() {
+async function createAddQuoteForm() {
     const addQuoteFormContainer = document.getElementById("addQuoteForm");
     addQuoteFormContainer.innerHTML = ""; // Clear existing form
 
@@ -62,12 +62,12 @@ function createAddQuoteForm() {
 }
 
 // Function to add a new quote
-function addQuote() {
+async function addQuote() {
     const newQuoteText = document.getElementById("newQuoteText").value;
     const newQuoteCategory = document.getElementById("newQuoteCategory").value;
     const newQuote = { text: newQuoteText, category: newQuoteCategory };
     quotes.push(newQuote);
-    saveQuotes();
+    await saveQuotes();
     populateCategories();
     filterQuotes();
     document.getElementById("newQuoteText").value = "";
@@ -126,7 +126,7 @@ async function fetchQuotesFromServer() {
         
         // Update local quotes array with server data
         quotes = data.map(post => ({ text: post.title, category: post.userId }));
-        saveQuotes();
+        await saveQuotes();
         populateCategories();
         filterQuotes();
     } catch (error) {
@@ -135,8 +135,8 @@ async function fetchQuotesFromServer() {
 }
 
 // Function to sync local data with server
-function syncWithServer() {
-    simulateServerInteraction();
+async function syncWithServer() {
+    await fetchQuotesFromServer();
     document.getElementById("syncStatus").textContent = "Data synced with server.";
 }
 
@@ -152,4 +152,4 @@ loadQuotes();
 populateCategories();
 
 // Simulate initial server interaction
-simulateServerInteraction();
+fetchQuotesFromServer();
