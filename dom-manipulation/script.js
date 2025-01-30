@@ -1,35 +1,3 @@
-// Function to post data to the server
-async function postQuoteToServer(quote) {
-    try {
-        // Post data to the server using a mock API
-        const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(quote)
-        });
-        const data = await response.json();
-        console.log('Quote posted to server:', data);
-    } catch (error) {
-        console.error('Error posting quote to server:', error);
-    }
-}
-
-// Function to add a new quote
-async function addQuote() {
-    const newQuoteText = document.getElementById("newQuoteText").value;
-    const newQuoteCategory = document.getElementById("newQuoteCategory").value;
-    const newQuote = { text: newQuoteText, category: newQuoteCategory };
-    quotes.push(newQuote);
-    await saveQuotes();
-    populateCategories();
-    filterQuotes();
-    await postQuoteToServer(newQuote); // Post quote to server
-    document.getElementById("newQuoteText").value = "";
-    document.getElementById("newQuoteCategory").value = "";
-}
-
 // Define an array to store quote objects
 let quotes = [];
 
@@ -93,6 +61,20 @@ async function createAddQuoteForm() {
     addQuoteFormContainer.appendChild(addQuoteButton);
 }
 
+// Function to add a new quote
+async function addQuote() {
+    const newQuoteText = document.getElementById("newQuoteText").value;
+    const newQuoteCategory = document.getElementById("newQuoteCategory").value;
+    const newQuote = { text: newQuoteText, category: newQuoteCategory };
+    quotes.push(newQuote);
+    await saveQuotes();
+    populateCategories();
+    filterQuotes();
+    await postQuoteToServer(newQuote); // Post quote to server
+    document.getElementById("newQuoteText").value = "";
+    document.getElementById("newQuoteCategory").value = "";
+}
+
 // Function to populate categories in the dropdown
 function populateCategories() {
     const categoryFilter = document.getElementById("categoryFilter");
@@ -136,6 +118,24 @@ function filterQuotes() {
     });
 }
 
+// Function to post data to the server
+async function postQuoteToServer(quote) {
+    try {
+        // Post data to the server using a mock API
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(quote)
+        });
+        const data = await response.json();
+        console.log('Quote posted to server:', data);
+    } catch (error) {
+        console.error('Error posting quote to server:', error);
+    }
+}
+
 // Function to simulate server interaction
 async function fetchQuotesFromServer() {
     try {
@@ -153,9 +153,28 @@ async function fetchQuotesFromServer() {
     }
 }
 
+// Function to sync local quotes with server
+async function syncQuotes() {
+    try {
+        // Simulate syncing data with the server
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(quotes)
+        });
+        const data = await response.json();
+        console.log('Quotes synced with server:', data);
+    } catch (error) {
+        console.error('Error syncing quotes with server:', error);
+    }
+}
+
 // Function to sync local data with server
 async function syncWithServer() {
     await fetchQuotesFromServer();
+    await syncQuotes();
     document.getElementById("syncStatus").textContent = "Data synced with server.";
 }
 
